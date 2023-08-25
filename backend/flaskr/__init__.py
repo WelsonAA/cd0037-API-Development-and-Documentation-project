@@ -5,6 +5,9 @@ from flask import Flask, request, abort, jsonify, Response, json
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
+
+from sqlalchemy import and_
+
 from backend.exceptions import *
 from backend.tables import setup_db, Question, Category, db
 
@@ -50,7 +53,7 @@ def create_app(test_config=None):
             return res
         except NotFoundException:
             abort(404)
-        except:
+        except Exception as e:
             abort(500)
 
     """
@@ -91,7 +94,7 @@ def create_app(test_config=None):
             return response
         except NotFoundException:
             abort(404)
-        except:
+        except Exception as e:
             abort(500)
 
     """
@@ -109,11 +112,10 @@ def create_app(test_config=None):
             this_question = Question.query.get(question_id)
             if this_question is None:
                 raise NotFoundException
-            db.session.delete(this_question)
-            db.session.commit()
+            this_question.delete()
         except NotFoundException:
             abort(404)
-        except:
+        except Exception as e:
             error = True
             db.session.rollback()
             print(sys.exc_info())
@@ -151,7 +153,8 @@ def create_app(test_config=None):
             current_category_string = Category.query.get(current_category_id).type
             fetched_questions_format = [question.format() for question in fetched_questions]
             total_questions = Question.query.count()
-            response_data = {
+            response_data = \
+            {
                 'questions': fetched_questions_format,
                 'totalQuestions': total_questions,
                 'currentCategory': current_category_string
@@ -162,7 +165,7 @@ def create_app(test_config=None):
             abort(404)
         except MissingDataException:
             abort(422)
-        except:
+        except Exception as e:
             abort(500)
 
     """
@@ -192,11 +195,10 @@ def create_app(test_config=None):
             if category is not None:
                 category = int(category)
             new_question = Question(question=question, answer=answer, category=category, difficulty=difficulty)
-            db.session.add(new_question)
-            db.session.commit()
+            new_question.insert()
         except MissingDataException:
             abort(422)
-        except:
+        except Exception as e:
             error = True
             db.session.rollback()
             print(sys.exc_info())
@@ -205,7 +207,8 @@ def create_app(test_config=None):
         if error:
             abort(500)
         else:
-            response_data = {
+            response_data = \
+             {
                 'newQuestionQuestion': question,
                 'newQuestionAnswer': answer,
                 'newQuestionCategory': str(category),
@@ -241,7 +244,7 @@ def create_app(test_config=None):
             return response
         except NotFoundException:
             abort(404)
-        except:
+        except Exception as e:
             abort(500)
 
     """
@@ -269,13 +272,14 @@ def create_app(test_config=None):
                 raise NotFoundException
             previous_questions = body.get('previousQuestions', [])
             previous_questions_int = [int(question) for question in previous_questions]
-            possible_questions = Question.query.filter(Question.category == quiz_category).all()
-            i = 0
+            possible_questions = Question.query.filter(and_(Question.category == quiz_category,
+                                                            Question.id.notin_(previous_questions_int))).all()
+            '''i = 0
             while i < len(possible_questions):
                 if possible_questions[i].id in previous_questions_int:
                     possible_questions.pop(i)
                     i -= 1
-                i += 1
+                i += 1'''
             if len(possible_questions) == 0:
                 raise NotFoundException
             next_question = random.choice(possible_questions)
@@ -287,7 +291,7 @@ def create_app(test_config=None):
             abort(404)
         except MissingDataException:
             abort(422)
-        except:
+        except Exception as e:
             abort(500)
 
     """
