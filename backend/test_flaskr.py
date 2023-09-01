@@ -1,10 +1,12 @@
 import unittest
-
+import os
 from flask import json
 from flask_sqlalchemy import SQLAlchemy
 
 from flaskr.__init__ import create_app
 from tables import *
+from dotenv import load_dotenv, dotenv_values
+
 
 
 class TriviaTestCase(unittest.TestCase):
@@ -12,10 +14,13 @@ class TriviaTestCase(unittest.TestCase):
 
     def setUp(self):
         """Define test variables and initialize app."""
+        load_dotenv()
         self.app = create_app()
         self.client = self.app.test_client
         self.database_name = "trivia_test"
-        self.database_path = "postgresql://{}:{}@{}/{}".format('student', 'george', 'localhost:5432',
+        self.db_username = os.getenv("DB_USERNAME")
+        self.db_password = os.getenv("DB_PASSWORD")
+        self.database_path = "postgresql://{}:{}@{}/{}".format(self.db_username, self.db_password, 'localhost:5432',
                                                                self.database_name)
         setup_db(self.app, self.database_path)
 
