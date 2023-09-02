@@ -274,12 +274,6 @@ def create_app(test_config=None):
             previous_questions_int = [int(question) for question in previous_questions]
             possible_questions = Question.query.filter(and_(Question.category == quiz_category,
                                                             Question.id.notin_(previous_questions_int))).all()
-            '''i = 0
-            while i < len(possible_questions):
-                if possible_questions[i].id in previous_questions_int:
-                    possible_questions.pop(i)
-                    i -= 1
-                i += 1'''
             if len(possible_questions) == 0:
                 raise NotFoundException
             next_question = random.choice(possible_questions)
@@ -303,41 +297,41 @@ def create_app(test_config=None):
     @app.errorhandler(400)
     def bad_request(error):
         return jsonify({
-            'success': False,
-            'error': 400,
-            'message': 'Bad Request',
+            "success": False,
+            "error": 400,
+            "message": "Bad Request",
         }), 400
 
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({
-            'success': False,
-            'error': 404,
-            'message': 'Resource Not Found'
+            "success": False,
+            "error": 404,
+            "message": "Resource Not Found"
         }), 404
 
     @app.errorhandler(405)
     def invalid_request(error):
         return jsonify({
-            'success': False,
-            'error': 405,
-            'message': 'Invalid Request'
+            "success": False,
+            "error": 405,
+            "message": "Invalid Request"
         }), 405
 
     @app.errorhandler(422)
     def unable_to_process(error):
         return jsonify({
-            'success': False,
-            'error': 422,
-            'message': 'Unable to process request'
+            "success": False,
+            "error": 422,
+            "message": "Unable to process request"
         }), 422
 
     @app.errorhandler(500)
     def internal_server_error(error):
         return jsonify({
-            'success': False,
-            'error': 500,
-            'message': 'Internal Server Error'
+            "success": False,
+            "error": 500,
+            "message": "Internal Server Error"
         }), 500
 
     return app

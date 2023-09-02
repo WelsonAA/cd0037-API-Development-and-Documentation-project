@@ -8,7 +8,6 @@ from tables import *
 from dotenv import load_dotenv, dotenv_values
 
 
-
 class TriviaTestCase(unittest.TestCase):
     """This class represents the trivia test case"""
 
@@ -200,7 +199,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertIn('questions', data)
         self.assertIn('totalQuestions', data)
         self.assertIn('currentCategory', data)
-        
+
     def test_get_category_questions_404(self):
         res = self.client().get('/categories/1000')
         data = json.loads(res.data)
@@ -217,7 +216,7 @@ class TriviaTestCase(unittest.TestCase):
                  'previousQuestions': ["17", "18", "19"]}
         res = self.client().post('/quizzes', json=param)
         data = json.loads(res.data)
-        self.assertEqual(res.status_code,200)
+        self.assertEqual(res.status_code, 200)
         self.assertIn('question', data)
         self.assertEqual(16, data["question"]["id"])
 
@@ -226,7 +225,7 @@ class TriviaTestCase(unittest.TestCase):
                  'previousQuestions': None}
         res = self.client().post('/quizzes', json=param)
         data = json.loads(res.data)
-        self.assertEqual(res.status_code,422)
+        self.assertEqual(res.status_code, 422)
         self.assertNotIn('question', data)
         self.assertFalse(data['success'])
         self.assertEqual(data['error'], 422)
@@ -234,17 +233,14 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_get_next_question_404(self):
         param = {'quizCategory': "2",
-                 'previousQuestions': ["16","17", "18", "19"]}
+                 'previousQuestions': ["16", "17", "18", "19"]}
         res = self.client().post('/quizzes', json=param)
         data = json.loads(res.data)
-        self.assertEqual(res.status_code,404)
+        self.assertEqual(res.status_code, 404)
         self.assertNotIn('question', data)
         self.assertFalse(data['success'])
         self.assertEqual(data['error'], 404)
         self.assertEqual(data['message'], 'Resource Not Found')
-
-        
-
 
 
 # Make the tests conveniently executable

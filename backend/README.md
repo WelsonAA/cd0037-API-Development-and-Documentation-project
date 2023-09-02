@@ -100,12 +100,10 @@ python test_flaskr.py
 ### Documentation Example
 
 `GET "/categories"`
-
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the 
 - category
 - Request Arguments: None
 - Returns: An object with a single key, `categories`, that contains an object of `id: category_string` key: value pairs.
-
 ```json
 {
   "1": "Science",
@@ -118,12 +116,10 @@ python test_flaskr.py
 ```
 
 `GET "/questions?page=${integer}"`
-
 - Fetches a paginated set of questions, a total number of questions, all categories and current category string.
 - Request Arguments: `page` - integer
 - Returns: An object with 10 paginated questions, total questions, object including all categories, and current category
   string, which is the category of the first question
-
 ```json
 {
     "questions": [
@@ -157,86 +153,13 @@ python test_flaskr.py
 }
 ```
 
-`GET "/categories/${id}/questions"`
-
-- Fetches questions for a cateogry specified by id request argument
-- Request Arguments: `id` - integer
-- Returns: An object with questions for the specified category, total questions, and current category string
-
-```json
-{
-    "questions": [
-        {
-            "id": 20,
-            "question": "What is the heaviest organ in the human body?",
-            "answer": "The Liver",
-            "category": 1,
-            "difficulty": 4
-        },
-        {
-            "id": 21,
-            "question": "Who discovered penicillin?",
-            "answer": "Alexander Fleming",
-            "category": 1,
-            "difficulty": 3
-        }
-    ],
-    "totalQuestions": 32,
-    "currentCategory": "Science"
-}
-```
-
 `DELETE "/questions/delete/${id}"`
-
 - Deletes a specified question using the id of the question
 - Request Arguments: `id` - integer
 - Returns: An object with the id of the deleted question
-
-```json
-{"deletedQuestion":20}
-```
-
-`POST "/quizzes"`
-
-- Sends a post request in order to get the next question
-- Request Body:
 ```json
 {
-    "previousQuestions": ["21"],
-    "quizCategory": "1"
- }
- ```
-- Returns: a single new question object from the same category that is not in the previous questions
-```json
-{
-    "id": 22,
-    "question": "Hematology is a branch of medicine involving the study of what?",
-    "answer": "Blood",
-    "category": 1,
-    "difficulty": 4
-}
-```
-
-`POST "/questions"`
-
-- Sends a post request in order to add a new question
-- Request Body:
-```json
-{
-    "question":  "Heres a new question string",
-    "answer":  "Heres a new answer string",
-    "difficulty": 1,
-    "category": 3
-}
-```
-- Returns an object with the data of the newly added question, total number of questions and the category of the new 
-  question
-```json
-{
-   "newQuestionQuestion": "Heres a new question string",
-   "newQuestionAnswer": "Heres a new answer string",
-   "newQuestionCategory": "3",
-   "newQuestionDifficulty": "1"
+  "deletedQuestion":20
 }
 ```
 
@@ -266,6 +189,76 @@ python test_flaskr.py
 }
 ```
 
+`POST "/questions"`
+- Sends a post request in order to add a new question
+- Request Body:
+```json
+{
+    "question":  "Heres a new question string",
+    "answer":  "Heres a new answer string",
+    "difficulty": 1,
+    "category": 3
+}
+```
+- Returns an object with the data of the newly added question, total number of questions and the category of the new 
+  question
+```json
+{
+   "newQuestionQuestion": "Heres a new question string",
+   "newQuestionAnswer": "Heres a new answer string",
+   "newQuestionCategory": "3",
+   "newQuestionDifficulty": "1"
+}
+```
+
+`GET "/categories/${id}/questions"`
+- Fetches questions for a cateogry specified by id request argument
+- Request Arguments: `id` - integer
+- Returns: An object with questions for the specified category, total questions, and current category string
+
+```json
+{
+    "questions": [
+        {
+            "id": 20,
+            "question": "What is the heaviest organ in the human body?",
+            "answer": "The Liver",
+            "category": 1,
+            "difficulty": 4
+        },
+        {
+            "id": 21,
+            "question": "Who discovered penicillin?",
+            "answer": "Alexander Fleming",
+            "category": 1,
+            "difficulty": 3
+        }
+    ],
+    "totalQuestions": 32,
+    "currentCategory": "Science"
+}
+```
+
+`POST "/quizzes"`
+- Sends a post request in order to get the next question
+- Request Body:
+```json
+{
+    "previousQuestions": ["21"],
+    "quizCategory": "1"
+ }
+ ```
+- Returns: a single new question object from the same category that is not in the previous questions
+```json
+{
+    "id": 22,
+    "question": "Hematology is a branch of medicine involving the study of what?",
+    "answer": "Blood",
+    "category": 1,
+    "difficulty": 4
+}
+```
+
 `GET "/categories/${category_id}/questions"`
 - Fetches questions for a category specified by id request argument
 - Request Arguments: id - integer
@@ -283,5 +276,50 @@ python test_flaskr.py
     ],
     "totalQuestions": 100,
     "currentCategory": "History"
+}
+```
+
+
+### Error Handlers
+- `400 Bad Request`: Indicates that the client's request is malformed or invalid.
+```json
+{
+       "success": false,
+       "error": 400,
+       "message": "Bad Request"
+}
+```
+- `404 Not Found`: Denotes that the requested resource does not exist.
+```json
+{
+       "success": false,
+       "error": 404,
+       "message": "Resource Not Found"
+ }
+```
+- `405 Invalid Request`: Occurs when the client attempts to use an HTTP method that is not allowed for a particular 
+resource.
+```json
+{
+       "success": false,
+       "error": 405,
+       "message": "Invalid Request"
+}
+```
+- `422 Unable to Process`: Indicates that the server understands the request, but it cannot be processed due to semantic 
+errors or invalid data.
+```json
+{
+       "success": false,
+       "error": 422,
+       "message": "Unable to process request"
+}
+```
+- `500 Internal Server Error`: Denotes a server-side error that was not caused by the client's request.
+```json
+{
+       "success": false,
+       "error": 500,
+       "message": "Internal Server Error"
 }
 ```
