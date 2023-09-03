@@ -42,7 +42,7 @@ def create_app(test_config=None):
     @app.route('/categories', methods=['GET'])
     def get_categories():
         try:
-            categories = Category.query.order_by(Category.type).all()
+            categories = Category.query.order_by(Category.id).all()
 
             if len(categories) == 0:
                 raise NotFoundException
@@ -273,7 +273,7 @@ def create_app(test_config=None):
             previous_questions = body.get('previousQuestions', [])
             previous_questions_int = [int(question) for question in previous_questions]
             possible_questions = Question.query.filter(and_(Question.category == quiz_category,
-                                                            Question.id.notin_(previous_questions_int))).all()
+                                                            Question.id.notin_(previous_questions))).all()
             if len(possible_questions) == 0:
                 raise NotFoundException
             next_question = random.choice(possible_questions)
