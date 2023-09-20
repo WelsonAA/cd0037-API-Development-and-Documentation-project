@@ -14,7 +14,7 @@
    navigating to the `/backend` directory and running:
 
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 #### Key Pip Dependencies
